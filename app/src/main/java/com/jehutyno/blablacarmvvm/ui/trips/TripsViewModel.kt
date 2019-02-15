@@ -1,5 +1,7 @@
 package com.jehutyno.blablacarmvvm.ui.trips
 
+import android.arch.lifecycle.MutableLiveData
+import android.view.View
 import com.jehutyno.blablacarmvvm.base.BaseViewModel
 import com.jehutyno.blablacarmvvm.network.BlablacarApi
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,6 +15,7 @@ class TripsViewModel: BaseViewModel() {
     lateinit var blablacarApi: BlablacarApi
 
     private lateinit var  subscription: Disposable
+    val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
 
     init {
         loadTrips()
@@ -31,11 +34,11 @@ class TripsViewModel: BaseViewModel() {
     }
 
     private fun onRetrieveTripsStart(){
-
+        loadingVisibility.value = View.VISIBLE
     }
 
     private fun onRetrieveTripsFinish(){
-
+        loadingVisibility.value = View.GONE
     }
 
     private fun onRetrieveTripsSuccess(){
