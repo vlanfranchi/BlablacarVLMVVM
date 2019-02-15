@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 const val BASE_URL: String = "https://edge.blablacar.com"
 
-interface BlablacarAPI {
+interface BlablacarApi {
 
     @POST("/token")
     fun getToken(): Observable<Token>
