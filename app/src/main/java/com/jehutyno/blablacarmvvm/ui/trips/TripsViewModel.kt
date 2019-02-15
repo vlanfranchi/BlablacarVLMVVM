@@ -46,4 +46,9 @@ class TripsViewModel: BaseViewModel() {
 
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        subscription.dispose()
+    }
+
 }
