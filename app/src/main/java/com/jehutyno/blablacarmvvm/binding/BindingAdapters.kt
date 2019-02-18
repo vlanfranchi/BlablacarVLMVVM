@@ -5,7 +5,13 @@ import android.arch.lifecycle.Observer
 import android.databinding.BindingAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import com.jehutyno.blablacarmvvm.extension.getParentActivity
+import com.jehutyno.blablacartestvalentinlanfranchi.view.CircleTransform
+import com.squareup.picasso.Picasso
+
+
 
 @BindingAdapter("mutableVisibility")
 fun setMutableVisibility(view: View, visibility: MutableLiveData<Int>?) {
@@ -13,4 +19,20 @@ fun setMutableVisibility(view: View, visibility: MutableLiveData<Int>?) {
     if(parentActivity != null && visibility != null) {
         visibility.observe(parentActivity, Observer { value -> view.visibility = value?:View.VISIBLE})
     }
+}
+
+@BindingAdapter("mutableText")
+fun setMutableText(view: TextView, text: MutableLiveData<String>?) {
+    val parentActivity:AppCompatActivity? = view.getParentActivity()
+    if(parentActivity != null && text != null) {
+        text.observe(parentActivity, Observer { value -> view.text = value?:""})
+    }
+}
+
+@BindingAdapter("bind:imageUrl")
+fun loadImage(view: ImageView, imageUrl: String) {
+    Picasso.get()
+        .load(imageUrl)
+        .transform(CircleTransform())
+        .into(view)
 }
