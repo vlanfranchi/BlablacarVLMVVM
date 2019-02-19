@@ -13,10 +13,4 @@ class TripViewHolder(private val binding: TripListItemBinding): RecyclerView.Vie
         binding.viewModel = viewModel
     }
 
-//    val departureTime = view.departureTime
-//    val locations = view.locations
-//    val price = view.price
-//    val userName = view.userName
-//    val userPicture = view.userPicture
-
 }
