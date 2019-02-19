@@ -9,13 +9,21 @@
                  android:roundIcon="@mipmap/ic_launcher_round"
                  android:supportsRtl="true"
                  android:theme="@style/AppTheme">
-        <activity android:name=".ui.trips.TripsActivity">
+        <activity android:name=".ui.search.SearchTripActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
 
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.trips.TripsActivity"
+                  android:allowTaskReparenting="true"
+                  android:parentActivityName=".ui.search.SearchTripActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.jehutyno.blablacarmvvm.ui.search.SearchTripActivity"/>
         </activity>
 
     </application>

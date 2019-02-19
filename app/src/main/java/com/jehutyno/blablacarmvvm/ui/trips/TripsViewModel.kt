@@ -11,7 +11,9 @@ import com.jehutyno.blablacarmvvm.network.BlablacarApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 import javax.inject.Inject
 
 
@@ -37,7 +39,6 @@ class TripsViewModel(private val sharedPreferences: SharedPreferences) : BaseVie
                 sharedPreferences.edit().putString("token", response.access_token).apply()
             }
             .share()
-        loadTrips()
     }
 
     private fun getAuthObservable(): Observable<Token> {
@@ -54,9 +55,22 @@ class TripsViewModel(private val sharedPreferences: SharedPreferences) : BaseVie
     }
 
 
-    private fun loadTrips() {
-        subscription =
-            getAuthObservable().flatMap { blablacarApi.getTrips("Bearer ${sharedPreferences.getString("token", "")}","paris", "marseille") }
+
+    fun loadTrips(departure: String, destination: String) {
+        subscription = getAuthObservable().flatMap {
+            blablacarApi.getTrips("Bearer ${sharedPreferences.getString("token", "")}", departure, destination)  }
+                .retryWhen { errorObservable ->
+                    errorObservable.zipWith(Observable.range(1, 3), BiFunction { error: Throwable, retryCount: Int -> Pair(error, retryCount) })
+                    .flatMap {
+                        val errorCode = (it.first as HttpException).code()
+                        if (errorCode == 403 || errorCode == 401) {
+                            sharedPreferences.edit().remove("token").apply()
+                            mAuthObservable
+                        } else {
+                            Observable.error(it.first)
+                        }
+                    }
+                }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { onRetrieveTripsStart() }
@@ -80,7 +94,7 @@ class TripsViewModel(private val sharedPreferences: SharedPreferences) : BaseVie
     }
 
     private fun onRetrieveTripsError(error: Throwable) {
-        println("Problemos: ${error.message}" )
+        println("Problemos: ${error.message}")
     }
 
     override fun onCleared() {
