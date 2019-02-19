@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.jehutyno.blablacarmvvm.R
 import com.jehutyno.blablacarmvvm.databinding.TripsActivityBinding
-import com.jehutyno.blablacarmvvm.injection.ViewModelFactory
+import com.jehutyno.blablacarmvvm.injection.component.ViewModelFactory
 
 class TripsActivity : AppCompatActivity() {
 

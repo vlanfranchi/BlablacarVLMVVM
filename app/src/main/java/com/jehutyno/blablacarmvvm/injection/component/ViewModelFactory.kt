@@ -1,4 +1,4 @@
-package com.jehutyno.blablacarmvvm.injection
+package com.jehutyno.blablacarmvvm.injection.component
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
