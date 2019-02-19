@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.jehutyno.blablacarmvvm.R
 import com.jehutyno.blablacarmvvm.databinding.TripsActivityBinding
+import com.jehutyno.blablacarmvvm.injection.ViewModelFactory
 
 class TripsActivity : AppCompatActivity() {
 
@@ -19,7 +20,7 @@ class TripsActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.trips_activity)
         binding.tripList.layoutManager = LinearLayoutManager(this)
 
-        viewModel = ViewModelProviders.of(this).get(TripsViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ViewModelFactory(this)).get(TripsViewModel::class.java)
 
         binding.viewModel = viewModel
     }

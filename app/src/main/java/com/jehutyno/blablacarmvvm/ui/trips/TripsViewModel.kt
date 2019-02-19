@@ -1,6 +1,7 @@
 package com.jehutyno.blablacarmvvm.ui.trips
 
 import android.arch.lifecycle.MutableLiveData
+import android.content.SharedPreferences
 import android.view.View
 import com.jehutyno.blablacarmvvm.base.BaseViewModel
 import com.jehutyno.blablacarmvvm.converter.TripConverter
@@ -14,18 +15,15 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 
-class TripsViewModel : BaseViewModel() {
+class TripsViewModel(private val sharedPreferences: SharedPreferences) : BaseViewModel() {
 
     @Inject
     lateinit var blablacarApi: BlablacarApi
-
-    var token: String? = null
 
     private lateinit var subscription: Disposable
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
     val tripsAdapter by lazy { TripsAdapter() }
     private var mAuthObservable: Observable<Token>
-    //val preferences by lazy { app.getSharedPreferences("session_prefs", Context.MODE_PRIVATE) }
 
     init {
         mAuthObservable = authenticateUser(
@@ -36,14 +34,14 @@ class TripsViewModel : BaseViewModel() {
             )
         )
             .doOnNext { response ->
-                token = response.access_token
+                sharedPreferences.edit().putString("token", response.access_token).apply()
             }
             .share()
         loadTrips()
     }
 
     private fun getAuthObservable(): Observable<Token> {
-        return if (token.isNullOrEmpty()) {
+        return if (sharedPreferences.getString("token", "").isNullOrEmpty()) {
             mAuthObservable
         } else {
             Observable.just<Token>(Token("", "", 0, 0, listOf()))
@@ -58,7 +56,7 @@ class TripsViewModel : BaseViewModel() {
 
     private fun loadTrips() {
         subscription =
-            getAuthObservable().flatMap { blablacarApi.getTrips("Bearer $token","paris", "marseille") }
+            getAuthObservable().flatMap { blablacarApi.getTrips("Bearer ${sharedPreferences.getString("token", "")}","paris", "marseille") }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { onRetrieveTripsStart() }
